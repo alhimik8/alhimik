@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 ###
-# Skript to parse come categories at elmir.ua shop
+# Skript to parse some categories at elmir.ua shop
 # Add your own categories to "urls"
 ###
 from lxml import html
