@@ -24,18 +24,18 @@ for url in urls:
 	tree = html.fromstring(page.content)
 	items = tree.xpath('//a[@class="item-name"]/text()')
 	raw_prices = tree.xpath('//span[@class="price cost"]/text()')
+	item_url =  tree.xpath('//p[@class="name"]//a/@href')
 	prices = [re.sub('\\xa0грн', '', i) for i in raw_prices]
 	print(url, " - processed")
 
 	with open('elmir_price.csv', 'a', newline='') as csvfile:
-		spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-		spamwriter.writerow(["Price from", now.strftime("%Y-%m-%d %H:%M")])
-		spamwriter.writerow(["Item Name ", "Item Price"]) 
-		data = list(zip(items, prices))
+		spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		spamwriter.writerow(["Price from", now.strftime("%Y-%m-%d %H:%M"), ""])
+		spamwriter.writerow(["Item Name ", "Item Price", "Item Url"]) 
+		data = list(zip(items, prices, item_url))
 		for row in data:
 			row = list(row)
 			spamwriter.writerow(row)
 		spamwriter.writerow([])
 print("----------------------------------------")
 print("Parsed and written to - elmir_price.csv ")
-
