@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###
 # Script to parse some categories at elmir.ua shop
-# Add your own categories to "urls"
+# Add your own categories
 ###
 from lxml import html
 import requests
@@ -10,17 +10,20 @@ import re
 import csv
 import datetime
 import urllib3
+import openpyxl
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 now = datetime.datetime.now()
+open('elmir_price.csv', 'w').close()
+
 print ("Parsing")
 print("----------------------------------------")
 # categories - see shop website 
-urls = "video_cards", "processors", "motherboards"
-for url in urls:
-	cur_url = ('https://elmir.ua/' + url + '/?onnal=1&orderby=cost&orderdir=asc&size=500')
+categories = "video_cards", "processors", "motherboards"
+for url in categories:
+	current_url = ('https://elmir.ua/' + url + '/?onnal=1&orderby=cost&orderdir=asc&size=500')
 	headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
-	page = requests.get(url=cur_url, headers=headers, verify=False)
+	page = requests.get(url=current_url, headers=headers, verify=False)
 	tree = html.fromstring(page.content)
 	items = tree.xpath('//a[@class="item-name"]/text()')
 	raw_prices = tree.xpath('//span[@class="price cost"]/text()')
@@ -39,3 +42,13 @@ for url in urls:
 		spamwriter.writerow([])
 print("----------------------------------------")
 print("Parsed and written to - elmir_price.csv ")
+
+csv_parsed = open("elmir_price.csv")
+wb = openpyxl.Workbook()
+ws = wb.active
+reader = csv.reader(csv_parsed, delimiter=',')
+for i in reader:
+    ws.append(i)
+csv_parsed.close()
+wb.save("elmir_price.xls")
+print("Parsed and written to - elmir_price.xls ")
