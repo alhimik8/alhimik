@@ -11,10 +11,14 @@ import csv
 import datetime
 import urllib3
 import openpyxl
+from time import gmtime, strftime
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 now = datetime.datetime.now()
-open('elmir_price.csv', 'w').close()
+timenow = strftime("%d%m%y_%H%M", gmtime())
+csv_file = 'elmir_price_' + str(timenow) + '.csv'
+xls_file = 'elmir_price_' + str(timenow) + '.xls'
+open(csv_file, 'w').close()
 
 print ("Parsing")
 print("----------------------------------------")
@@ -31,7 +35,7 @@ for url in categories:
 	prices = [re.sub('\\xa0грн', '', i) for i in raw_prices]
 	print(url, " - processed")
 
-	with open('elmir_price.csv', 'a', newline='') as csvfile:
+	with open(csv_file, 'a', newline='') as csvfile:
 		spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		spamwriter.writerow(["Price from", now.strftime("%Y-%m-%d %H:%M"), ""])
 		spamwriter.writerow(["Item Name ", "Item Price", "Item Url"]) 
@@ -41,14 +45,14 @@ for url in categories:
 			spamwriter.writerow(row)
 		spamwriter.writerow([])
 print("----------------------------------------")
-print("Parsed and written to - elmir_price.csv ")
+print("Parsed and written to - csv file: ", csv_file)
 
-csv_parsed = open("elmir_price.csv")
+csv_parsed = open(csv_file)
 wb = openpyxl.Workbook()
 ws = wb.active
 reader = csv.reader(csv_parsed, delimiter=',')
 for i in reader:
     ws.append(i)
 csv_parsed.close()
-wb.save("elmir_price.xls")
-print("Parsed and written to - elmir_price.xls ")
+wb.save(xls_file)
+print("Parsed and written to - xls file: ", xls_file)
