@@ -11,11 +11,11 @@ import csv
 import datetime
 import urllib3
 import openpyxl
-from time import gmtime, strftime
+from time import gmtime, strftime, time, localtime
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 now = datetime.datetime.now()
-timenow = strftime("%d%m%y_%H%M", gmtime())
+timenow = strftime("%d%m%y_%H%M", localtime())
 csv_file = 'elmir_price_' + str(timenow) + '.csv'
 xls_file = 'elmir_price_' + str(timenow) + '.xls'
 open(csv_file, 'w').close()
